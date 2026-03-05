@@ -324,16 +324,6 @@ body {
   pointer-events: none;
 }
 
-/* Subtle grid background on widget body */
-.widget-body::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(148,163,184,.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148,163,184,.08) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
 
 /* ===== CONTEXT MENU ===== */
 .ctx-menu {
@@ -451,15 +441,6 @@ body {
   overflow: hidden;
 }
 
-.drag-ghost .widget-body::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(148,163,184,.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148,163,184,.08) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; height: 6px; }

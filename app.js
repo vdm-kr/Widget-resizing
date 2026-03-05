@@ -24,72 +24,6 @@ const state = {
   ],
 };
 
-// Placeholder chart SVGs per widget (deterministic by index)
-const PLACEHOLDERS = [
-  // Line chart
-  `<svg viewBox="0 0 240 120" width="240" style="opacity:.13" aria-hidden="true">
-    <polyline points="10,95 50,60 90,72 130,28 175,48 230,32"
-      fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-    <polyline points="10,95 50,60 90,72 130,28 175,48 230,32 230,110 10,110 Z"
-      fill="#4f46e5" opacity=".18" stroke="none"/>
-    <line x1="10" y1="110" x2="230" y2="110" stroke="#94a3b8" stroke-width="1.2"/>
-  </svg>`,
-
-  // Bar chart
-  `<svg viewBox="0 0 240 120" width="240" style="opacity:.13" aria-hidden="true">
-    <rect x="18"  y="50" width="26" height="60" fill="#4f46e5" rx="3"/>
-    <rect x="58"  y="28" width="26" height="82" fill="#4f46e5" rx="3"/>
-    <rect x="98"  y="65" width="26" height="45" fill="#4f46e5" rx="3"/>
-    <rect x="138" y="38" width="26" height="72" fill="#4f46e5" rx="3"/>
-    <rect x="178" y="15" width="26" height="95" fill="#4f46e5" rx="3"/>
-    <line x1="10" y1="112" x2="220" y2="112" stroke="#94a3b8" stroke-width="1.2"/>
-  </svg>`,
-
-  // Donut
-  `<svg viewBox="0 0 120 120" width="96" style="opacity:.13" aria-hidden="true">
-    <circle cx="60" cy="60" r="42" fill="none" stroke="#e2e8f0" stroke-width="18"/>
-    <circle cx="60" cy="60" r="42" fill="none" stroke="#4f46e5" stroke-width="18"
-      stroke-dasharray="175 88" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
-    <circle cx="60" cy="60" r="42" fill="none" stroke="#c7d2fe" stroke-width="18"
-      stroke-dasharray="66 197" stroke-dashoffset="-175" transform="rotate(-90 60 60)"/>
-  </svg>`,
-
-  // Table rows
-  `<svg viewBox="0 0 240 120" width="240" style="opacity:.13" aria-hidden="true">
-    <rect x="10" y="10" width="220" height="18" fill="#4f46e5" rx="3"/>
-    <rect x="10" y="35" width="220" height="14" fill="#e2e8f0" rx="2"/>
-    <rect x="10" y="56" width="220" height="14" fill="#e2e8f0" rx="2"/>
-    <rect x="10" y="77" width="220" height="14" fill="#e2e8f0" rx="2"/>
-    <rect x="10" y="98" width="160" height="14" fill="#e2e8f0" rx="2"/>
-  </svg>`,
-
-  // Scatter / bubble
-  `<svg viewBox="0 0 240 120" width="240" style="opacity:.13" aria-hidden="true">
-    <circle cx="40"  cy="80" r="10" fill="#4f46e5"/>
-    <circle cx="80"  cy="45" r="16" fill="#4f46e5" opacity=".6"/>
-    <circle cx="120" cy="70" r="8"  fill="#4f46e5" opacity=".8"/>
-    <circle cx="155" cy="30" r="20" fill="#4f46e5" opacity=".4"/>
-    <circle cx="195" cy="55" r="13" fill="#4f46e5" opacity=".7"/>
-    <line x1="10" y1="110" x2="230" y2="110" stroke="#94a3b8" stroke-width="1.2"/>
-    <line x1="10" y1="10"  x2="10"  y2="110" stroke="#94a3b8" stroke-width="1.2"/>
-  </svg>`,
-
-  // KPI number
-  `<div style="text-align:center;opacity:.13;pointer-events:none">
-    <div style="font-size:42px;font-weight:700;color:#4f46e5;letter-spacing:-2px">84.2%</div>
-    <div style="font-size:12px;color:#64748b;margin-top:4px;letter-spacing:.5px;text-transform:uppercase">Current rate</div>
-    <div style="font-size:12px;color:#22c55e;margin-top:8px">▲ 3.1% vs last week</div>
-  </div>`,
-];
-
-const placeholderMap = {}; // widget id → placeholder index
-
-function getPlaceholder(id) {
-  if (!(id in placeholderMap)) {
-    placeholderMap[id] = Object.keys(placeholderMap).length % PLACEHOLDERS.length;
-  }
-  return PLACEHOLDERS[placeholderMap[id]];
-}
 
 // ===== FIND WIDGET =====
 
@@ -169,9 +103,7 @@ function makeWidget(w, ri, wi) {
         <button class="action-btn more-btn" data-id="${w.id}" title="More options">${ICON_MORE}</button>
       </div>
     </div>
-    <div class="widget-body">
-      <div class="widget-placeholder">${getPlaceholder(w.id)}</div>
-    </div>`;
+    <div class="widget-body"></div>`;
 
   return el;
 }
@@ -391,11 +323,6 @@ function swapWidgets(idA, idB) {
   a.widget.name = b.widget.name;
   b.widget.name = tmpName;
 
-  // Swap placeholder assignments
-  const piA = placeholderMap[idA] ?? 0;
-  const piB = placeholderMap[idB] ?? 0;
-  placeholderMap[idA] = piB;
-  placeholderMap[idB] = piA;
 }
 
 // ===== CONTEXT MENU =====
@@ -468,7 +395,7 @@ document.getElementById('ctxMenu').addEventListener('click', e => {
       const clone = { id: uid(), name: widget.name + ' (copy)', flex: widget.flex / 2 };
       widget.flex = widget.flex / 2;
       row.splice(wi + 1, 0, clone);
-      placeholderMap[clone.id] = (placeholderMap[widget.id] + 1) % PLACEHOLDERS.length;
+
       break;
     }
 
